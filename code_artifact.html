@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="大阪秋日漫遊">
+    
+    <!-- 設定手機主畫面 APP 縮圖與網頁 Icon -->
+    <link rel="apple-touch-icon" href="image_9573ff.png">
+    <link rel="icon" type="image/png" href="image_9573ff.png">
+    <link rel="shortcut icon" href="image_9573ff.png">
+    
+    <!-- 設定 Line/IG 等通訊軟體分享時的預覽圖 -->
+    <meta property="og:title" content="🍁 11月大阪賞楓雙人遊">
+    <meta property="og:description" content="2026.11.15 - 11.20 | 與女友的放鬆之旅">
+    <meta property="og:image" content="image_9573ff.png">
+
+    <meta name="theme-color" content="#fbbf24">
+    <title>11月大阪賞楓雙人遊</title>
+    <style>
+        :root {
+            --primary-color: #fbbf24;
+            --bg-color: #fffbeb;
+            --text-color: #333333;
+            --card-bg: #ffffff;
+            --accent-color: #d97706;
+            --border-color: #fde68a;
+        }
+        * { box-sizing: border-box; font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; }
+        body { margin: 0; padding: 0; background-color: var(--bg-color); color: var(--text-color); }
+        
+        header { background-color: var(--primary-color); color: #443200; padding: 30px 20px; text-align: center; }
+        header h1 { margin: 0; font-size: 26px; font-weight: bold; letter-spacing: 2px; text-shadow: 1px 1px 2px rgba(255,255,255,0.3); }
+        header p { margin: 10px 0 0; font-size: 14px; opacity: 0.85; letter-spacing: 1px; font-weight: bold; }
+        
+        .nav-container { overflow-x: auto; background: var(--card-bg); box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 10; -webkit-overflow-scrolling: touch; }
+        .nav-container::-webkit-scrollbar { display: none; }
+        .nav-container { -ms-overflow-style: none; scrollbar-width: none; }
+        .nav-tabs { display: flex; white-space: nowrap; padding: 0 10px; min-width: max-content; }
+        .tab-btn { padding: 15px 20px; text-align: center; border: none; background: none; font-size: 15px; cursor: pointer; border-bottom: 3px solid transparent; color: #888; transition: all 0.3s; margin-right: 5px; -webkit-tap-highlight-color: transparent; }
+        .tab-btn:last-child { margin-right: 0; }
+        .tab-btn.active { border-bottom-color: var(--accent-color); color: var(--accent-color); font-weight: bold; }
+        
+        .content { padding: 25px 20px; max-width: 800px; margin: 0 auto; }
+        .day-panel { display: none; }
+        .day-panel.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .schedule-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px; }
+        .schedule-table th, .schedule-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        .schedule-table th { background-color: rgba(251, 191, 36, 0.15); color: #92400e; font-weight: bold; white-space: nowrap; }
+        .schedule-table tr:last-child td { border-bottom: none; }
+        .schedule-table .transit-row td { background-color: #fbfbfb; color: #888; font-style: italic; font-size: 13px; padding: 8px 15px; }
+        .schedule-table .time-col { white-space: nowrap; color: #666; font-weight: 500; }
+        .schedule-table .place-col { font-weight: bold; color: #333; }
+        .schedule-table a { color: var(--accent-color); text-decoration: none; font-weight: 500; }
+        .schedule-table a:hover { text-decoration: underline; }
+        .note-text { font-size: 13px; color: #666; margin-top: 4px; display: block; line-height: 1.5; }
+        
+        .food-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .food-card { display: flex; flex-direction: column; background: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-top: 4px solid var(--accent-color); }
+        .food-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .food-category { display: inline-block; background: #fef3c7; padding: 4px 10px; border-radius: 15px; font-size: 11px; color: #92400e; margin-bottom: 10px; align-self: flex-start; }
+        .food-desc { font-size: 14px; color: #666; line-height: 1.5; margin-bottom: 15px; }
+        .food-link { font-size: 13px; color: var(--accent-color); text-decoration: none; display: inline-block; margin-top: auto; font-weight: bold; }
+        .food-link:hover { text-decoration: underline; }
+
+        .overview-card { background: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 15px; border: 1px solid var(--border-color); }
+        .banner-card { 
+            background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.9) 60%, rgba(255,255,255,0.2) 100%), url('https://images.unsplash.com/photo-1590559899731-a38283bce401?auto=format&fit=crop&w=800&q=80') center/cover;
+            border-radius: 16px; padding: 30px 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color);
+        }
+        .banner-subtitle { color: var(--accent-color); font-size: 12px; font-weight: bold; letter-spacing: 1px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+        .banner-title { font-size: 28px; font-weight: bold; color: #333; margin: 0 0 15px 0; line-height: 1.3; }
+        .banner-date { display: inline-flex; align-items: center; gap: 6px; color: #666; font-size: 13px; font-weight: 500; }
+        
+        .agreement-box { display: flex; align-items: flex-start; gap: 12px; background: #fffbeb; }
+        .agreement-box input[type="checkbox"] { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--accent-color); cursor: pointer; }
+        .agreement-text { font-size: 14px; color: #444; line-height: 1.5; font-weight: 500; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; }
+        .stat-item { border-right: 1px solid #eee; padding: 0 10px; }
+        .stat-item:last-child { border-right: none; }
+        .stat-icon { font-size: 20px; margin-bottom: 5px; color: var(--accent-color); }
+        .stat-value { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 4px; }
+        .stat-label { font-size: 11px; color: #888; }
+        
+        .special-task { background: #fffbeb; border-color: #fde68a; display: flex; align-items: center; gap: 15px; }
+        .special-task-icon { font-size: 20px; background: #fff; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid #fde68a; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .special-task-text { flex: 1; }
+        .special-task-title { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 4px; }
+        .special-task-desc { font-size: 13px; color: #666; }
+        .special-task-desc span { color: var(--accent-color); font-weight: bold; }
+        
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 16px; font-weight: bold; color: #333; border-bottom: 2px solid #fde68a; padding-bottom: 10px; }
+        
+        .checklist-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+        .check-item { display: flex; align-items: flex-start; gap: 10px; }
+        .check-item input[type="checkbox"] { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--accent-color); cursor: pointer; }
+        .check-text { font-size: 14px; color: #333; font-weight: 500; }
+        .check-subtext { font-size: 12px; color: #888; margin-top: 2px; }
+
+        .info-list { display: flex; flex-direction: column; gap: 15px; }
+        .info-row { display: flex; align-items: flex-start; gap: 12px; }
+        .info-icon { font-size: 18px; margin-top: 2px; }
+        .info-content { flex: 1; font-size: 14px; color: #444; line-height: 1.5; }
+        .info-content strong { color: #333; }
+        .info-action { font-size: 12px; color: var(--accent-color); background: #fffbeb; border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 20px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 4px; margin-top: 5px; }
+
+        .shop-dropdown { margin-top: 8px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 0; overflow: hidden; }
+        .shop-dropdown summary { padding: 10px 12px; font-size: 13px; color: var(--accent-color); font-weight: bold; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none; background: #fef3c7; }
+        .shop-dropdown summary::-webkit-details-marker { display: none; }
+        .shop-list { padding: 10px 12px; border-top: 1px solid #fde68a; font-size: 13px; color: #555; line-height: 1.5; }
+        .shop-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--border-color); }
+        .shop-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .shop-item-title { font-weight: bold; color: #333; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .shop-item-link { color: var(--accent-color); text-decoration: none; font-size: 11px; border: 1px solid var(--accent-color); padding: 3px 8px; border-radius: 12px; transition: all 0.2s; white-space: nowrap; }
+        .shop-item-link:hover { background: var(--accent-color); color: #fff; text-decoration: none; }
+        .dropdown-desc p { margin: 4px 0; }
+
+        /* ====== 手機版 (Mobile App 風格) 專屬響應式設計 ====== */
+        @media (max-width: 768px) {
+            header { padding: 20px 15px; }
+            header h1 { font-size: 22px; }
+            .content { padding: 15px 12px; }
+            
+            /* 將電腦版表格轉換為手機版卡片式排版 */
+            .schedule-table { box-shadow: none; background: transparent; }
+            .schedule-table thead { display: none; }
+            .schedule-table tr { display: block; margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--card-bg); box-shadow: 0 2px 8px rgba(0,0,0,0.04); overflow: hidden; }
+            .schedule-table td { display: block; text-align: left; padding: 12px 15px; border-bottom: 1px dashed #eee; font-size: 15px; }
+            .schedule-table td:last-child { border-bottom: none; }
+            
+            /* 使用偽元素自動加入手機版標題 */
+            .schedule-table td:nth-child(1)::before { content: '📍 地點'; font-size: 12px; color: var(--accent-color); display: block; margin-bottom: 4px; font-weight: bold; letter-spacing: 0.5px; }
+            .schedule-table td:nth-child(2)::before { content: '🕒 抵達時間'; font-size: 12px; color: var(--accent-color); display: block; margin-bottom: 4px; font-weight: bold; }
+            .schedule-table td:nth-child(3)::before { content: '🕒 離開時間'; font-size: 12px; color: var(--accent-color); display: block; margin-bottom: 4px; font-weight: bold; }
+            .schedule-table td:nth-child(4)::before { content: '🔗 地圖導航'; font-size: 12px; color: var(--accent-color); display: block; margin-bottom: 4px; font-weight: bold; }
+            .schedule-table td:nth-child(5)::before { content: '📝 備註'; font-size: 12px; color: var(--accent-color); display: block; margin-bottom: 4px; font-weight: bold; }
+            
+            /* 隱藏內容為空的儲存格，讓排版更緊湊 */
+            .schedule-table td:empty { display: none; }
+            
+            /* 交通列特化 (移除標題，置中顯示) */
+            .schedule-table .transit-row td { text-align: center; background: #fbfbfb; font-size: 14px; padding: 10px; border-bottom: none; }
+            .schedule-table .transit-row td::before { display: none; }
+            
+            /* 行程總覽區塊優化 */
+            .stats-grid { grid-template-columns: 1fr; }
+            .stat-item { border-right: none; border-bottom: 1px solid #eee; padding: 12px 10px; display: flex; align-items: center; text-align: left; }
+            .stat-item:last-child { border-bottom: none; padding-bottom: 0; }
+            .stat-icon { margin-bottom: 0; margin-right: 15px; font-size: 24px; }
+            .stat-value { font-size: 16px; flex: 1; margin-bottom: 0; }
+            .stat-label { font-size: 13px; }
+            
+            .checklist-grid { grid-template-columns: 1fr; }
+            .banner-title { font-size: 24px; }
+            
+            /* 下拉選單點擊區域放大，更適合手指點擊 */
+            .shop-dropdown summary { padding: 12px 15px; font-size: 14px; }
+        }
+
+        /* 記帳本專屬樣式 */
+        .expense-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .expense-card { background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid var(--border-color); text-align: center; }
+        .expense-card h3 { margin: 0 0 5px 0; font-size: 13px; color: #888; font-weight: normal; }
+        .expense-card .amount { font-size: 20px; font-weight: bold; color: var(--accent-color); }
+        .expense-form { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 12px; color: #666; font-weight: bold; }
+        .form-group input, .form-group select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; background: #fff; }
+        .add-btn { background: var(--accent-color); color: #fff; border: none; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 5px; -webkit-tap-highlight-color: transparent; }
+        .expense-list { display: flex; flex-direction: column; gap: 10px; }
+        .expense-item { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 12px 15px; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .expense-info { flex: 1; }
+        .expense-name { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 4px; }
+        .expense-payer { font-size: 11px; display: inline-block; padding: 2px 6px; border-radius: 4px; background: #fef3c7; color: #92400e; }
+        .expense-price { text-align: right; }
+        .expense-jpy { font-size: 14px; font-weight: bold; color: #333; }
+        .expense-twd { font-size: 11px; color: #888; margin-top: 2px; }
+        .delete-btn { background: #ff4d4f; color: white; border: none; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-left: 10px; cursor: pointer; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🍁 關西秋日漫遊</h1>
+        <p>2026.11.15 - 11.20 | 與女友的放鬆之旅</p>
+    </header>
+
+    <div class="nav-container">
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showDay('overview', this)">行程總覽<br><small>Overview</small></button>
+            <button class="tab-btn" onclick="showDay('day1', this)">11/15(日)<br><small>Day 1</small></button>
+            <button class="tab-btn" onclick="showDay('day2', this)">11/16(一)<br><small>Day 2</small></button>
+            <button class="tab-btn" onclick="showDay('day3', this)">11/17(二)<br><small>Day 3</small></button>
+            <button class="tab-btn" onclick="showDay('day4', this)">11/18(三)<br><small>Day 4</small></button>
+            <button class="tab-btn" onclick="showDay('day5', this)">11/19(四)<br><small>Day 5</small></button>
+            <button class="tab-btn" onclick="showDay('day6', this)">11/20(五)<br><small>Day 6</small></button>
+            <button class="tab-btn" onclick="showDay('shops', this)">🛍️ 逛店推薦<br><small>Shopping</small></button>
+            <button class="tab-btn" onclick="showDay('food', this)">🍴 美食推薦<br><small>Tabelog 百名店</small></button>
+            <button class="tab-btn" onclick="showDay('expenses', this)">💰 記帳本<br><small>Expenses</small></button>
+        </div>
+    </div>
+
+    <div class="content">
+        <div id="overview" class="day-panel active">
+            <!-- 橫幅 -->
+            <div class="banner-card">
+                <div class="banner-subtitle">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    OSAKA, JAPAN
+                </div>
+                <h2 class="banner-title">秋日大阪漫遊<br>質感雙人旅行團</h2>
+                <div class="banner-date">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    2026.11.15 (日) — 11.20 (五)
+                </div>
+            </div>
+
+            <!-- 同意書 -->
+            <div class="overview-card agreement-box">
+                <input type="checkbox" id="agreement">
+                <label for="agreement" class="agreement-text">我同意依照此手冊之行程安排行動，旅途中絕不擺臭臉、不當跟風巨嬰、亦無異議</label>
+            </div>
+
+            <!-- 數據總覽 -->
+            <div class="overview-card">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-icon">🗓️</div>
+                        <div class="stat-value">6天5夜</div>
+                        <div class="stat-label">旅遊天數</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">💴</div>
+                        <div class="stat-value">約 10 萬</div>
+                        <div class="stat-label">當地預估花費/円</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🏨</div>
+                        <div class="stat-value" style="font-size: 13px;">Hotel Geometiq</div>
+                        <div class="stat-label">住宿飯店</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 特別任務 -->
+            <div class="overview-card special-task">
+                <div class="special-task-icon">🎁</div>
+                <div class="special-task-text">
+                    <div class="special-task-title">特別任務提醒</div>
+                    <div class="special-task-desc">出門玩得開心，但也別忘了要 <span>買伴手禮給行政們</span> 喔！</div>
+                </div>
+            </div>
+
+            <!-- 檢查清單 -->
+            <div class="overview-card">
+                <div class="section-header">
+                    <span>📋 行前必備檢查清單</span>
+                    <span style="font-size: 12px; color: #999; font-weight: normal;">Checklist &gt;</span>
+                </div>
+                <div class="checklist-grid">
+                    <label class="check-item"><input type="checkbox"><div><div class="check-text">投保個人海外旅平險</div><div class="check-subtext">(含突發疾病醫療+不便險)</div></div></label>
+                    <label class="check-item"><input type="checkbox"><div><div class="check-text">填妥 Visit Japan Web</div><div class="check-subtext">(截圖入境與海關申報 QR Code)</div></div></label>
+                    <label class="check-item"><input type="checkbox"><div><div class="check-text">護照效期 6 個月以上</div><div class="check-subtext">+ 電子機票列印或存手機</div></div></label>
+                    <label class="check-item"><input type="checkbox"><div><div class="check-text">下載好日本 5G eSIM</div><div class="check-subtext">(抵達關西機場後切換)</div></div></label>
+                    <label class="check-item"><input type="checkbox"><div><div class="check-text">日幣千元現鈔</div><div class="check-subtext">(備查 5~10 萬日圓等值外幣)</div></div></label>
+                    <label class="check-item"><input type="checkbox"><div><div class="check-text">綁定交通卡 Suica/ICOCA</div><div class="check-subtext">(Apple Wallet 直接新增)</div></div></label>
+                    <label class="check-item"><input type="checkbox"><div><div class="check-text">USJ 門票與 Klook 憑證</div><div class="check-subtext">(提前存入手機票夾)</div></div></label>
+                    <label class="check-item"><input type="checkbox"><div><div class="check-text">常備個人藥品</div><div class="check-subtext">(腸胃藥、休足時間、防蚊液)</div></div></label>
+                </div>
+            </div>
+
+            <!-- 交通與支付 -->
+            <div class="overview-card">
+                <div class="section-header">
+                    <span>🪪 交通卡與支付準備</span>
+                </div>
+                <div class="info-list">
+                    <div class="info-row"><div class="info-icon">🚆</div><div class="info-content"><strong>JR / 地鐵</strong>：關西區域可直接使用 Apple Pay 綁定之 Suica 或實體 ICOCA 感應進站，非常方便。</div></div>
+                    <div class="info-row"><div class="info-icon">💳</div><div class="info-content"><strong>信用卡支付</strong>：多數百貨公司、餐廳與便利商店皆可刷卡 (Visa/Mastercard/JCB)，建議將主力卡綁定 Apple Pay。</div></div>
+                    <div class="info-row"><div class="info-icon">💴</div><div class="info-content"><strong>現金準備</strong>：少部分在地串炸店、拉麵食券機、神社購買御守或賽錢，仍需使用日幣現金，建議隨身攜帶零錢包。</div></div>
+                </div>
+            </div>
+
+            <!-- 飯店與聯絡 -->
+            <div class="overview-card">
+                <div class="section-header">
+                    <span>🏨 入住飯店與緊急聯絡</span>
+                </div>
+                <div class="info-list">
+                    <div class="info-row">
+                        <div class="info-icon">🏢</div>
+                        <div class="info-content">
+                            <strong>飯店</strong>：HOTEL GEOMETIQ Osaka Umeda<br>
+                            <span style="font-size: 12px; color: #777;">(JR 大阪站 / 梅田站步行約 10 分鐘)</span><br>
+                            <a href="https://www.google.com/maps/search/?api=1&query=HOTEL+GEOMETIQ+Osaka+Umeda" target="_blank" class="info-action">📍 查看地圖</a>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-icon">✈️</div>
+                        <div class="info-content">
+                            <strong>航班</strong>：台灣虎航 (tigerlight)<br>去程 IT212 (14:40-17:55) / 回程 IT211 (11:30-13:50)
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-icon">📞</div>
+                        <div class="info-content">
+                            <strong>緊急聯絡</strong>：臺北駐大阪經濟文化辦事處<br>
+                            <span style="font-size: 12px; color: #777;">急難救助電話：090-8794-4568</span><br>
+                            <a href="tel:09087944568" class="info-action">📞 撥打電話</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 1 (11/15 日) -->
+        <div id="day1" class="day-panel">
+            <div style="overflow-x:auto;">
+                <table class="schedule-table">
+                    <thead>
+                        <tr><th>📍 地點</th><th>抵達時間</th><th>離開時間</th><th>🔗 Google Map</th><th>📝 備註</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="place-col">桃園國際機場 (TPE)</td><td class="time-col"></td><td class="time-col">14:40</td><td></td><td>tigerlight IT212</td></tr>
+                        <tr class="transit-row"><td colspan="5">✈️ 飛行約 2小時15分</td></tr>
+                        <tr><td class="place-col">關西國際機場 (KIX)</td><td class="time-col">17:55</td><td class="time-col">18:30</td><td><a href="https://www.google.com/maps/search/?api=1&query=Kansai+International+Airport" target="_blank">Map</a></td><td>辦理入境與拿行李</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚆 搭乘 JR 或 南海電鐵約 1 小時</td></tr>
+                        <tr><td class="place-col">HOTEL GEOMETIQ Osaka Umeda</td><td class="time-col">19:30</td><td class="time-col">20:00</td><td><a href="https://www.google.com/maps/search/?api=1&query=HOTEL+GEOMETIQ+Osaka+Umeda" target="_blank">Map</a></td><td>飯店 Check-in、放行李稍作休息</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚶 走路約 10 分鐘</td></tr>
+                        <tr><td class="place-col">烤肉力丸 梅田初天神店</td><td class="time-col">20:15</td><td class="time-col">22:00</td><td><a href="https://www.google.com/maps/search/?api=1&query=焼肉力丸+梅田お初天神店" target="_blank">Map</a></td><td>Tabelog 高分燒肉。以美味的日式和牛燒肉犒賞自己！</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚶 走路約 10 分鐘</td></tr>
+                        <tr><td class="place-col">回到飯店</td><td class="time-col">22:15</td><td class="time-col"></td><td><a href="https://www.google.com/maps/search/?api=1&query=HOTEL+GEOMETIQ+Osaka+Umeda" target="_blank">Map</a></td><td>休息</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Day 2 (11/16 一) -->
+        <div id="day2" class="day-panel">
+            <div style="overflow-x:auto;">
+                <table class="schedule-table">
+                    <thead>
+                        <tr><th>📍 地點</th><th>抵達時間</th><th>離開時間</th><th>🔗 Google Map</th><th>📝 備註</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="place-col">從飯店出發</td><td class="time-col"></td><td class="time-col">07:30</td><td></td><td>前往 Klook 行程集合點</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚌 搭乘專車</td></tr>
+                        <tr><td class="place-col">關西近郊漫遊 (Klook行程)</td><td class="time-col">08:00</td><td class="time-col">18:00</td><td><a href="https://s.klook.com/c/vXnB9Nbp3D" target="_blank">行程連結</a></td><td>跟著導遊輕鬆欣賞關西的自然與人文風景</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚌 行程結束於難波/道頓堀一帶解散</td></tr>
+                        <tr>
+                            <td class="place-col">道頓堀商圈</td><td class="time-col">18:15</td><td class="time-col">19:30</td><td><a href="https://www.google.com/maps/search/?api=1&query=Dotonbori" target="_blank">Map</a></td>
+                            <td>
+                                漫步商圈，與固力果跑跑人合照
+                                <details class="shop-dropdown">
+                                    <summary>🍴 難波周邊 平價美食備案 <span>▼</span></summary>
+                                    <div class="shop-list">
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">難波在地關東煮 <a href="https://www.google.com/maps/search/?api=1&query=難波+おでん" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>份量實惠的關西風格關東煮，體驗最道地的大阪庶民口味。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">松屋 (Matsuya) 難波店 <a href="https://www.google.com/maps/search/?api=1&query=松屋+難波" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>連鎖日式牛肉飯食堂，出餐快且平價美味，隨時補充體力的好選擇。</div>
+                                        </div>
+                                    </div>
+                                </details>
+                            </td>
+                        </tr>
+                        <tr class="transit-row"><td colspan="5">🚶 走路約 5 分鐘</td></tr>
+                        <tr><td class="place-col">Zundouya Dotonbori</td><td class="time-col">19:35</td><td class="time-col">21:00</td><td><a href="https://www.google.com/maps/search/?api=1&query=ラー麺ずんどう屋+心斎橋" target="_blank">Map</a></td><td>Tabelog 4.7 分，品嚐濃郁的日式拉麵</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚆 搭乘地鐵返回梅田約 15 分鐘</td></tr>
+                        <tr><td class="place-col">回到飯店</td><td class="time-col">21:30</td><td class="time-col"></td><td><a href="https://www.google.com/maps/search/?api=1&query=HOTEL+GEOMETIQ+Osaka+Umeda" target="_blank">Map</a></td><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Day 3 (11/17 二) -->
+        <div id="day3" class="day-panel">
+            <div style="overflow-x:auto;">
+                <table class="schedule-table">
+                    <thead>
+                        <tr><th>📍 地點</th><th>抵達時間</th><th>離開時間</th><th>🔗 Google Map</th><th>📝 備註</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="place-col">從飯店出發</td><td class="time-col"></td><td class="time-col">07:30</td><td></td><td></td></tr>
+                        <tr class="transit-row"><td colspan="5">🚆 梅田搭 JR環狀線轉夢咲線約 15 分鐘</td></tr>
+                        <tr><td class="place-col">日本環球影城 (USJ)</td><td class="time-col">08:00</td><td class="time-col">19:00</td><td><a href="https://www.google.com/maps/search/?api=1&query=Universal+Studios+Japan" target="_blank">Map</a></td><td>享受瑪利歐園區的歡樂與哈利波特的魔法氛圍。<br><span class="note-text">時間僅供參考，可依當天體力彈性調整</span></td></tr>
+                        <tr class="transit-row"><td colspan="5">🚆 搭乘 JR 返回梅田約 15 分鐘</td></tr>
+                        <tr><td class="place-col">New Sushi Center Links Umeda</td><td class="time-col">19:30</td><td class="time-col">20:30</td><td><a href="https://www.google.com/maps/search/?api=1&query=ニューすしセンター+リンクス梅田店" target="_blank">Map</a></td><td>平價美味的握壽司，撫慰玩樂一整天的疲憊</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚶 走路約 15 分鐘</td></tr>
+                        <tr><td class="place-col">梅田藍天大廈 空中庭園展望台</td><td class="time-col">20:45</td><td class="time-col">22:00</td><td><a href="https://www.google.com/maps/search/?api=1&query=梅田スカイビル+空中庭園展望台" target="_blank">Map</a></td><td>漫步於露天觀景台，在浪漫的氣氛中欣賞大阪市區的璀璨夜景</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚶 走路約 10 分鐘</td></tr>
+                        <tr><td class="place-col">回到飯店</td><td class="time-col">22:15</td><td class="time-col"></td><td><a href="https://www.google.com/maps/search/?api=1&query=HOTEL+GEOMETIQ+Osaka+Umeda" target="_blank">Map</a></td><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Day 4 (11/18 三) -->
+        <div id="day4" class="day-panel">
+            <div style="overflow-x:auto;">
+                <table class="schedule-table">
+                    <thead>
+                        <tr><th>📍 地點</th><th>抵達時間</th><th>離開時間</th><th>🔗 Google Map</th><th>📝 備註</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="place-col">從飯店出發</td><td class="time-col"></td><td class="time-col">08:00</td><td></td><td></td></tr>
+                        <tr class="transit-row"><td colspan="5">🚆 御堂筋線至「千里中央」站，轉乘 29 號公車</td></tr>
+                        <tr>
+                            <td class="place-col">勝尾寺 (達摩寺)</td><td class="time-col">09:30</td><td class="time-col">12:30</td><td><a href="https://www.google.com/maps/search/?api=1&query=勝尾寺" target="_blank">Map</a></td>
+                            <td>
+                                漫步滿山紅葉中，欣賞成群的達摩不倒翁
+                                <details class="shop-dropdown">
+                                    <summary>✨ 勝尾寺 交通與參拜攻略 <span>▼</span></summary>
+                                    <div class="shop-list">
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">🚌 交通指南</div>
+                                            <div class="dropdown-desc">
+                                                <p><strong>電車轉公車：</strong>搭乘御堂筋線至「箕面萱野站」，於第 8 月台搭乘 30 號巴士。車資 800 日圓，車程約 20 分鐘。可刷 IC 卡或向人員刷卡買票。</p>
+                                                <p><strong>計程車：</strong>單程約 3,200 日圓。若不想擠公車或同行者較多，搭計程車會舒適很多。（回程離峰需稍候）</p>
+                                            </div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">🎟️ 門票預約</div>
+                                            <div class="dropdown-desc">
+                                                <p>建議提前於網路購買電子門票，省去現場排隊。入園有「集章明信片」活動，集滿可獲得限定明信片。</p>
+                                            </div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">🔴 參拜與達摩神籤</div>
+                                            <div class="dropdown-desc">
+                                                <p>1. <strong>進化之橋：</strong>走過噴灑水霧的橋，象徵洗滌煩惱。</p>
+                                                <p>2. <strong>本堂：</strong>參拜千手觀世音菩薩。</p>
+                                                <p>3. <strong>達摩神籤：</strong>至本堂旁購買 (¥500)，取出底部籤詩後，可將達摩小偶隨喜擺放於寺內角落。</p>
+                                                <p><em>* 貼心提醒：寺內階梯多，請穿好走的鞋子。</em></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+                            </td>
+                        </tr>
+                        <tr class="transit-row"><td colspan="5">🚆 搭乘公車轉地鐵至心齋橋/難波區域</td></tr>
+                        <tr>
+                            <td class="place-col">Orange Street & 美國街</td><td class="time-col">14:00</td><td class="time-col">15:30</td><td><a href="https://www.google.com/maps/search/?api=1&query=Orange+Street+Osaka" target="_blank">Map</a></td>
+                            <td>
+                                逛逛獨立設計師服飾與手作純銀配件
+                                <details class="shop-dropdown">
+                                    <summary>🛍️ 南船場/心齋橋 特色選物清單 <span>▼</span></summary>
+                                    <div class="shop-list">
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">OD number (農林會館3樓) <a href="https://www.google.com/maps/search/?api=1&query=農林会館+大阪" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>隱身復古大樓的買手店。主打法式做舊工裝與微成熟單品，推薦特色馬皮鞋。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">歐 (Au) <a href="https://www.google.com/maps/search/?api=1&query=Au+大阪+服裝" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>隱藏於二樓的概念買手店，販售風格前衛的小眾日系設計師品牌。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">Fresh Service <a href="https://www.google.com/maps/search/?api=1&query=FreshService+headquarters+osaka" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>主打單車與 Lifestyle 戶外潮流風格，服飾與生活配件都非常具設計感。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">public (買手店) <a href="https://www.google.com/maps/search/?api=1&query=public+osaka+服裝" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>藏在 Fresh Service 旁的二樓，引進多個質感日系小眾品牌，不容錯過。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">Domica Posta (古董海報) <a href="https://www.google.com/maps/search/?api=1&query=Domica+Posta+大阪" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>專賣各式經典與古董電影海報，可捲成小捲包裝帶回台灣。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">SORA (堀江店) <a href="https://www.google.com/maps/search/?api=1&query=SORA+堀江店" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>戶外潮流集合店，一次逛足 Birkenstock、Gramicci 等戶外品牌。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">journal standard Furniture <a href="https://www.google.com/maps/search/?api=1&query=journal+standard+Furniture+osaka" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>大型家具與生活用品店，質感極佳，適合尋找居家佈置靈感。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">ANTIQUE MIKE (玩具店) <a href="https://www.google.com/maps/search/?api=1&query=ANTIQUE+MIKE+osaka" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>氣氛活潑熱情的美式玩具古董店，販售車牌及各類趣味民俗小物。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">Heads High <a href="https://www.google.com/maps/search/?api=1&query=Heads+High+osaka" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>橘子街上的指標性潮牌買手店。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">Uncle Sam <a href="https://www.google.com/maps/search/?api=1&query=Uncle+Sam+osaka" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>美式風格買手店，選品包含各式風格工裝品牌。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">Jam (古著店) <a href="https://www.google.com/maps/search/?api=1&query=古着屋JAM+堀江店" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>老牌大型古著店，空間寬敞、價格平實，非常適合挖寶。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">Lee 大阪店 <a href="https://www.google.com/maps/search/?api=1&query=Lee+大阪店" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>選品特別，設有折扣區，可以尋找特別的丹寧服飾。</div>
+                                        </div>
+                                    </div>
+                                </details>
+                                <details class="shop-dropdown">
+                                    <summary>🍴 堀江/心齋橋 百名店備案 <span>▼</span></summary>
+                                    <div class="shop-list">
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">Craft Burger co. (堀江) <a href="https://www.google.com/maps/search/?api=1&query=Craft+Burger+co.+堀江" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>Tabelog 3.52 漢堡百名店。推薦：洋蔥壓扁漢堡¥2000、經典起司漢堡¥1350。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">中華そば カドヤ食堂 総本店 <a href="https://www.google.com/maps/search/?api=1&query=中華そば+カドヤ食堂+総本店" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>Tabelog 3.78 拉麵百名店。位於西長堀站，推薦極具特色的豬腳沾麵¥3870。</div>
+                                        </div>
+                                    </div>
+                                </details>
+                            </td>
+                        </tr>
+                        <tr class="transit-row"><td colspan="5">🚶 走路約 5 分鐘</td></tr>
+                        <tr><td class="place-col">Oh ouioui (堀江咖啡廳)</td><td class="time-col">15:35</td><td class="time-col">16:45</td><td><a href="https://www.google.com/maps/search/?api=1&query=Oh+ouioui+osaka" target="_blank">Map</a></td><td>逛累了，找間氣氛好的獨立咖啡館坐下來聊天</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚆 從心齋橋搭乘地鐵至「惠美須町」站約 15 分鐘</td></tr>
+                        <tr><td class="place-col">通天閣與新世界</td><td class="time-col">17:15</td><td class="time-col">18:30</td><td><a href="https://www.google.com/maps/search/?api=1&query=Tsutenkaku" target="_blank">Map</a></td><td>欣賞通天閣夜景，感受有別於白天的熱鬧下町氛圍</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚶 走路約 5 分鐘</td></tr>
+                        <tr>
+                            <td class="place-col">達摩串炸 新世界總本店</td><td class="time-col">18:35</td><td class="time-col">20:00</td><td><a href="https://www.google.com/maps/search/?api=1&query=串かつだるま+新世界総本店" target="_blank">Map</a></td>
+                            <td>
+                                體驗最道地的大阪串炸
+                                <details class="shop-dropdown">
+                                    <summary>🍴 新世界 周邊百名店備案 <span>▼</span></summary>
+                                    <div class="shop-list">
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">串かつ ひげ勝 <a href="https://www.google.com/maps/search/?api=1&query=串かつ+ひげ勝" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>Tabelog 3.63，西成區極受歡迎的在地串炸老店。可以體驗點滿 20 串大口吃肉的痛快感。</div>
+                                        </div>
+                                    </div>
+                                </details>
+                            </td>
+                        </tr>
+                        <tr class="transit-row"><td colspan="5">🚆 搭乘地鐵返回梅田約 20 分鐘</td></tr>
+                        <tr><td class="place-col">回到飯店</td><td class="time-col">20:30</td><td class="time-col"></td><td><a href="https://www.google.com/maps/search/?api=1&query=HOTEL+GEOMETIQ+Osaka+Umeda" target="_blank">Map</a></td><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Day 5 (11/19 四) -->
+        <div id="day5" class="day-panel">
+            <div style="overflow-x:auto;">
+                <table class="schedule-table">
+                    <thead>
+                        <tr><th>📍 地點</th><th>抵達時間</th><th>離開時間</th><th>🔗 Google Map</th><th>📝 備註</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="place-col">從飯店出發</td><td class="time-col"></td><td class="time-col">08:15</td><td></td><td></td></tr>
+                        <tr class="transit-row"><td colspan="5">🚶 走路 15 分鐘</td></tr>
+                        <tr><td class="place-col">Onigiri Gorichan</td><td class="time-col">08:30</td><td class="time-col">09:15</td><td><a href="https://www.google.com/maps/search/?api=1&query=おにぎりごりちゃん+梅田" target="_blank">Map</a></td><td>吃個美味的日式飯糰開啟美好的一天！</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚶 走路約 10 分鐘前往中崎町</td></tr>
+                        <tr>
+                            <td class="place-col">中崎町復古街區</td><td class="time-col">09:25</td><td class="time-col">10:30</td><td><a href="https://www.google.com/maps/search/?api=1&query=Nakazakicho" target="_blank">Map</a></td>
+                            <td>
+                                充滿昭和懷舊風情的文青街區
+                                <details class="shop-dropdown">
+                                    <summary>🛍️ 中崎町 特色選物清單 <span>▼</span></summary>
+                                    <div class="shop-list">
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">Corner Shop <a href="https://www.google.com/maps/search/?api=1&query=Corner+Shop+中崎町" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>街角的古書、雜貨與咖啡店。販售二手雜誌、自家胸章、衛衣與香爐，極具品味。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">umo <a href="https://www.google.com/maps/search/?api=1&query=umo+中崎町" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>由 Corner Shop 老闆娘經營的雜貨店，販售台灣老物、縫紉套裝與生活器具。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">Green p <a href="https://www.google.com/maps/search/?api=1&query=Green+pepe+中崎町" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>販售古著服飾與復古雜貨 (如復古刨冰機) 的尋寶好去處。</div>
+                                        </div>
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">YAMA (老物選物店) <a href="https://www.google.com/maps/search/?api=1&query=YAMA+中崎町" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>販售老闆從世界各地蒐集回來的古董擺件、瓷器與特色服飾，陳列別緻。</div>
+                                        </div>
+                                    </div>
+                                </details>
+                                <details class="shop-dropdown">
+                                    <summary>☕ 中崎町 咖啡與美食推薦 <span>▼</span></summary>
+                                    <div class="shop-list">
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">招牌布丁咖啡廳 <a href="https://www.google.com/maps/search/?api=1&query=中崎町+布丁+喫茶店" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>必點濃密焦糖布丁，以及加入冰淇淋、帶特殊碳香味的冰美式咖啡。</div>
+                                        </div>
+                                    </div>
+                                </details>
+                            </td>
+                        </tr>
+                        <tr class="transit-row"><td colspan="5">🚆 梅田搭乘 JR 大阪環狀線至「大阪城公園」站約 15 分鐘</td></tr>
+                        <tr>
+                            <td class="place-col">大阪城與大阪城公園</td><td class="time-col">10:50</td><td class="time-col">12:30</td><td><a href="https://www.google.com/maps/search/?api=1&query=Osaka+Castle" target="_blank">Map</a></td>
+                            <td>
+                                在充滿歷史感的大阪城公園牽著手悠閒散步
+                                <details class="shop-dropdown">
+                                    <summary>🍴 大阪城周邊/京橋 百名店美食 <span>▼</span></summary>
+                                    <div class="shop-list">
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">居酒屋とよ (Izakaya Toyo) <a href="https://www.google.com/maps/search/?api=1&query=居酒屋とよ" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>Tabelog 3.56 無座酒吧百名店。Netflix《世界小吃》報導過的傳奇立吞居酒屋！推薦：海味三盤¥4580、炙燒鮪魚頰¥750。</div>
+                                        </div>
+                                    </div>
+                                </details>
+                            </td>
+                        </tr>
+                        <tr class="transit-row"><td colspan="5">🚆 搭車約 20 分鐘</td></tr>
+                        <tr><td class="place-col">四天王寺</td><td class="time-col">13:00</td><td class="time-col">14:00</td><td><a href="https://www.google.com/maps/search/?api=1&query=Shitenno-ji" target="_blank">Map</a></td><td>前往日本最古老的寺廟之一，享受寧靜的歷史氛圍</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚆 搭車 20 分鐘</td></tr>
+                        <tr><td class="place-col">黑門市場</td><td class="time-col">14:20</td><td class="time-col">15:45</td><td><a href="https://www.google.com/maps/search/?api=1&query=Kuromon+Ichiba+Market" target="_blank">Map</a></td><td>體驗在地市場的活力，可以尋找一些新鮮小吃</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚆 搭車前往難波約 10 分鐘</td></tr>
+                        <tr>
+                            <td class="place-col">難波 City (Namba City)</td><td class="time-col">16:00</td><td class="time-col">16:45</td><td><a href="https://www.google.com/maps/search/?api=1&query=Namba+City" target="_blank">Map</a></td>
+                            <td>
+                                逛逛難波車站周邊的商場
+                                <details class="shop-dropdown">
+                                    <summary>✨ 難波特色店清單 <span>▼</span></summary>
+                                    <div class="shop-list">
+                                        <div class="shop-item">
+                                            <div class="shop-item-title">adamski (アダムスキー) <a href="https://www.google.com/maps/search/?api=1&query=adamski+難波" target="_blank" class="shop-item-link">📍 地圖</a></div>
+                                            <div>位於難波 City 負一樓 (Montbell 旁)，專賣動漫公仔、中古唱片、甲子園三角旗與二手鑰匙扣等懷舊玩具。</div>
+                                        </div>
+                                    </div>
+                                </details>
+                            </td>
+                        </tr>
+                        <tr class="transit-row"><td colspan="5">🚶 走路 5 分鐘</td></tr>
+                        <tr><td class="place-col">sari sari store (cocowell)</td><td class="time-col">17:00</td><td class="time-col">17:30</td><td><a href="https://www.google.com/maps/search/?api=1&query=sari+sari+store+cocowell" target="_blank">Map</a></td><td>充滿南洋風情的選物店逛逛</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚶 走路 5 分鐘</td></tr>
+                        <tr><td class="place-col">Teishoku Yaoya-to-Gohan Uraya</td><td class="time-col">17:35</td><td class="time-col">19:00</td><td><a href="https://www.google.com/maps/search/?api=1&query=やさい定食+うらや+難波本店" target="_blank">Map</a></td><td>享用美味的日式定食，結束豐富的一天</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚆 搭車 15 分鐘</td></tr>
+                        <tr><td class="place-col">回到飯店</td><td class="time-col">19:15</td><td class="time-col"></td><td><a href="https://www.google.com/maps/search/?api=1&query=HOTEL+GEOMETIQ+Osaka+Umeda" target="_blank">Map</a></td><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Day 6 (11/20 五) -->
+        <div id="day6" class="day-panel">
+            <div style="overflow-x:auto;">
+                <table class="schedule-table">
+                    <thead>
+                        <tr><th>📍 地點</th><th>抵達時間</th><th>離開時間</th><th>🔗 Google Map</th><th>📝 備註</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td class="place-col">飯店周邊</td><td class="time-col">07:30</td><td class="time-col">08:30</td><td></td><td>悠閒早餐，整理行李並辦理退房</td></tr>
+                        <tr class="transit-row"><td colspan="5">🚆 搭乘 JR 關空快速或利木津巴士約 1 小時</td></tr>
+                        <tr><td class="place-col">關西國際機場 (KIX)</td><td class="time-col">09:30</td><td class="time-col">11:30</td><td><a href="https://www.google.com/maps/search/?api=1&query=Kansai+International+Airport" target="_blank">Map</a></td><td>辦理登機與免稅店最後採買</td></tr>
+                        <tr class="transit-row"><td colspan="5">✈️ 飛行約 2小時20分</td></tr>
+                        <tr><td class="place-col">桃園國際機場 (TPE)</td><td class="time-col">13:50</td><td class="time-col"></td><td></td><td>tigerlight IT211。帶著滿滿回憶回到台灣</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Shop Collection -->
+        <div id="shops" class="day-panel">
+            <div class="overview-card">
+                <div class="section-header">
+                    <span>🏛️ 淀屋橋與中之島地區 (大阪都市秘境)</span>
+                </div>
+                <div class="food-grid">
+                    <div class="food-card">
+                        <div class="food-title">bard heart (芝川大樓)</div>
+                        <div class="food-category">手工巧克力 / 伴手禮</div>
+                        <div class="food-desc">位於復古建築「芝川大樓」一樓，主打結合日式風格與瑪雅元素的手工巧克力。入選 Tabelog 百名店，造型精緻可愛，非常適合自用或作為伴手禮。</div>
+                        <a href="https://www.google.com/maps/search/?api=1&query=芝川ビル+チョコレート" target="_blank" class="food-link">📍 查看地圖位置</a>
+                    </div>
+                    <div class="food-card">
+                        <div class="food-title">童書之森 中之島</div>
+                        <div class="food-category">圖書館 / 建築美學</div>
+                        <div class="food-desc">由建築大師安藤忠雄打造的質感交錯空間。除兒童書籍外，亦收藏時尚服裝、攝影、室內居家及草間彌生等藝術書籍，還有復古的麵包超人與特攝紀錄書。</div>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Nakanoshima+Childrens+Book+Forest" target="_blank" class="food-link">📍 查看地圖位置</a>
+                    </div>
+                    <div class="food-card">
+                        <div class="food-title">Festival Hall (大阪節慶廳)</div>
+                        <div class="food-category">音樂廳 / 拍照打卡</div>
+                        <div class="food-desc">中之島著名的音樂廳，內部有一面極具氣勢的巨大紅色地毯階梯，充滿震撼力，是非常適合拍照打卡的隱藏景點。</div>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Festival+Hall+Osaka" target="_blank" class="food-link">📍 查看地圖位置</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Food Collection -->
+        <div id="food" class="day-panel">
+            <div class="food-grid">
+                <div class="food-card">
+                    <div class="food-title">とんかつ中村</div>
+                    <div class="food-category">Tabelog 3.88 | 炸豬排百名店</div>
+                    <div class="food-desc">2026 炸豬排百名店 (可線上預約)。推薦「炸豬肋定食 (¥3100)」加點「單點豬菲力 (¥1300)」，肉質極其柔嫩且外衣酥脆。</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=とんかつ中村" target="_blank" class="food-link">📍 Google Map 定位</a>
+                </div>
+
+                <div class="food-card">
+                    <div class="food-title">Mカッセ (M Casse)</div>
+                    <div class="food-category">Tabelog 3.82 | 咖哩百名店</div>
+                    <div class="food-desc">2024 咖哩 WEST 百名店。必點「招牌綜合咖哩 (¥2000)」，香料層次豐富，視覺與味覺的雙重享受。</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Mカッセ" target="_blank" class="food-link">📍 Google Map 定位</a>
+                </div>
+
+                <div class="food-card">
+                    <div class="food-title">焼肉 ホルモン 万千</div>
+                    <div class="food-category">Tabelog 3.71 | 日式燒肉百名店</div>
+                    <div class="food-desc">2025 日式燒肉 WEST 百名店。必點蔥鹽牛舌/鹽味牛五花 (各¥1760)、鹽味牛肋肉/醬燒橫隔膜 (各¥1870)，頂級水準。</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=焼肉+ホルモン+万千" target="_blank" class="food-link">📍 Google Map 定位</a>
+                </div>
+
+                <div class="food-card">
+                    <div class="food-title">La Barcaccia</div>
+                    <div class="food-category">Tabelog 3.62 | 義大利料理百名店</div>
+                    <div class="food-desc">2025 義大利料理 WEST 百名店。強烈推薦「海膽披薩 (¥5500)」與「牡蠣墨魚麵 (¥3080)」，極鮮美的窯烤風味。</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=La+Barcaccia" target="_blank" class="food-link">📍 Google Map 定位</a>
+                </div>
+
+                <div class="food-card">
+                    <div class="food-title">ダテダチ (Datedachi)</div>
+                    <div class="food-category">Tabelog 3.61 | 無座酒吧百名店</div>
+                    <div class="food-desc">2025 無座酒吧百名店。超高CP值神店！推薦紫蘇雞頸肉/青蔥雞肝/醬燒雞心 (各¥280)、三分熟炸雞 (¥550)。</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=ダテダチ" target="_blank" class="food-link">📍 Google Map 定位</a>
+                </div>
+
+                <div class="food-card">
+                    <div class="food-title">ニク サングルマン</div>
+                    <div class="food-category">Tabelog 3.56 | 西式料理百名店</div>
+                    <div class="food-desc">2025 西式料理 WEST 百名店。肉食愛好者必訪！大推「歐姆蛋漢堡排 (¥2080)」與浮誇厚實的「厚切牛舌漢堡 (¥2580)」。</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=ニク+サングルマン" target="_blank" class="food-link">📍 Google Map 定位</a>
+                </div>
+                
+                <div class="food-card">
+                    <div class="food-title">薑汁豬肉定食專賣店</div>
+                    <div class="food-category">日式定食 / 在地美食</div>
+                    <div class="food-desc">提供多種部位的薑汁豬肉定食，肉質油瘦均勻、鮮嫩多汁，搭配生雞蛋拌飯非常入味。</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=大阪+生姜焼き定食" target="_blank" class="food-link">📍 Google Map 定位</a>
+                </div>
+                
+                <div class="food-card">
+                    <div class="food-title">心齋橋大份量拉麵</div>
+                    <div class="food-category">拉麵 / 飽足感</div>
+                    <div class="food-desc">湯頭帶有炙燒豬肉香氣與蔬菜清甜，套餐組合份量極大（包含拉麵、白飯、煎餃及大瓶飲料）。</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=心斎橋+大盛りラーメン" target="_blank" class="food-link">📍 Google Map 定位</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expenses Collection -->
+        <div id="expenses" class="day-panel">
+            <div class="overview-card">
+                <div class="section-header">
+                    <span>⚙️ 當下匯率設定 (TWD/JPY)</span>
+                </div>
+                <div class="form-group" style="flex-direction: row; align-items: center;">
+                    <input type="number" id="exchange-rate" value="0.21" step="0.001" style="width: 100px;">
+                    <span style="font-size: 13px; color: #666; margin-left: 10px;">預設為 0.21 (1日幣 = 0.21台幣)</span>
+                </div>
+            </div>
+
+            <div class="expense-summary">
+                <div class="expense-card">
+                    <h3>總花費 (日幣)</h3>
+                    <div class="amount" id="total-jpy">¥0</div>
+                </div>
+                <div class="expense-card">
+                    <h3>總花費 (台幣)</h3>
+                    <div class="amount" id="total-twd">NT$0</div>
+                </div>
+                <div class="expense-card">
+                    <h3>我付的 (JPY)</h3>
+                    <div class="amount" id="me-jpy" style="font-size: 16px; color: #666;">¥0</div>
+                </div>
+                <div class="expense-card">
+                    <h3>女友付的 (JPY)</h3>
+                    <div class="amount" id="gf-jpy" style="font-size: 16px; color: #666;">¥0</div>
+                </div>
+            </div>
+
+            <div class="expense-form">
+                <div class="form-group">
+                    <label>項目名稱</label>
+                    <input type="text" id="exp-name" placeholder="例如: 晚餐、車票、伴手禮">
+                </div>
+                <div class="form-group">
+                    <label>花費金額 (日幣 ¥)</label>
+                    <input type="number" id="exp-amount" placeholder="輸入日幣金額">
+                </div>
+                <div class="form-group">
+                    <label>這筆是誰先付的？</label>
+                    <select id="exp-payer">
+                        <option value="me">👦 我付的</option>
+                        <option value="gf">👧 女友付的</option>
+                        <option value="shared">💼 共同公費</option>
+                    </select>
+                </div>
+                <button class="add-btn" onclick="addExpense()">新增一筆花費</button>
+            </div>
+
+            <div class="section-header" style="margin-top: 15px;">
+                <span>📝 花費明細清單</span>
+            </div>
+            <div class="expense-list" id="expense-list">
+                <!-- 記帳明細會顯示在這裡 -->
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function showDay(id, btn) {
+            document.querySelectorAll('.day-panel').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // ==========================================
+        // 記帳本功能邏輯 (Expenses Feature)
+        // ==========================================
+        let expenses = JSON.parse(localStorage.getItem('osaka_expenses')) || [];
+        
+        function updateExpenseUI() {
+            const list = document.getElementById('expense-list');
+            const rateInput = document.getElementById('exchange-rate');
+            const rate = parseFloat(rateInput.value) || 0.21;
+            
+            list.innerHTML = '';
+            let totalJpy = 0;
+            let meJpy = 0;
+            let gfJpy = 0;
+
+            const payerMap = {
+                'me': '👦 我付的',
+                'gf': '👧 女友付的',
+                'shared': '💼 共同公費'
+            };
+
+            // 如果沒有資料顯示提示
+            if (expenses.length === 0) {
+                list.innerHTML = '<div style="text-align:center; padding: 20px; color: #999; font-size: 14px;">目前還沒有紀錄任何花費喔！</div>';
+            }
+
+            // 渲染明細清單
+            expenses.forEach((exp, index) => {
+                totalJpy += exp.amount;
+                if (exp.payer === 'me') meJpy += exp.amount;
+                if (exp.payer === 'gf') gfJpy += exp.amount;
+
+                const twdAmount = Math.round(exp.amount * rate);
+                
+                const item = document.createElement('div');
+                item.className = 'expense-item';
+                item.innerHTML = `
+                    <div class="expense-info">
+                        <div class="expense-name">${exp.name}</div>
+                        <div class="expense-payer">${payerMap[exp.payer]}</div>
+                    </div>
+                    <div class="expense-price">
+                        <div class="expense-jpy">¥${exp.amount.toLocaleString()}</div>
+                        <div class="expense-twd">NT$${twdAmount.toLocaleString()}</div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteExpense(${index})" title="刪除此筆紀錄">✕</button>
+                `;
+                list.appendChild(item);
+            });
+
+            // 更新總結數字
+            document.getElementById('total-jpy').innerText = `¥${totalJpy.toLocaleString()}`;
+            document.getElementById('total-twd').innerText = `NT$${Math.round(totalJpy * rate).toLocaleString()}`;
+            document.getElementById('me-jpy').innerText = `¥${meJpy.toLocaleString()}`;
+            document.getElementById('gf-jpy').innerText = `¥${gfJpy.toLocaleString()}`;
+            
+            // 存入瀏覽器快取
+            localStorage.setItem('osaka_expenses', JSON.stringify(expenses));
+        }
+
+        function addExpense() {
+            const nameInput = document.getElementById('exp-name');
+            const amountInput = document.getElementById('exp-amount');
+            const payerInput = document.getElementById('exp-payer');
+
+            const name = nameInput.value.trim();
+            const amount = parseInt(amountInput.value);
+            const payer = payerInput.value;
+
+            // 簡易防呆機制 (避免沒填或填錯)
+            if (!name || isNaN(amount) || amount <= 0) {
+                return; 
+            }
+
+            // 加入陣列並指派唯一 ID
+            expenses.unshift({ name, amount, payer, id: Date.now() });
+            
+            // 清空輸入框
+            nameInput.value = '';
+            amountInput.value = '';
+            
+            // 重新渲染畫面
+            updateExpenseUI();
+        }
+
+        function deleteExpense(index) {
+            expenses.splice(index, 1);
+            updateExpenseUI();
+        }
+
+        // 監聽匯率改變，即時更新台幣換算
+        document.getElementById('exchange-rate').addEventListener('input', updateExpenseUI);
+
+        // 網頁載入時初始化記帳本畫面
+        window.addEventListener('load', updateExpenseUI);
+
+    </script>
+</body>
+</html>
